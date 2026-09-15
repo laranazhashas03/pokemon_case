@@ -1,4 +1,4 @@
-namespace Pokemon.Domain.Entities;
+namespace Entity.Entities;
 
 public class User
 {

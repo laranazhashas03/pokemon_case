@@ -1,7 +1,7 @@
+using Entity.Entities;
 using Microsoft.EntityFrameworkCore;
-using Pokemon.Domain.Entities;
 
-namespace Pokemon.Infrastructure.Data;
+namespace DataAccess.Data;
 
 public class AppDbContext : DbContext
 {
@@ -11,11 +11,8 @@ public class AppDbContext : DbContext
     }
 
     public DbSet<User> Users => Set<User>();
-
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
-
     public DbSet<UserPokemon> UserPokemons => Set<UserPokemon>();
-
     public DbSet<FavoritePokemon> FavoritePokemons => Set<FavoritePokemon>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
