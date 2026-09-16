@@ -1,7 +1,15 @@
 using DataAccess.Data;
+using DataAccess.Repositories;
+using DataAccess.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
+using Business.Helpers;
+using Business.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddScoped<PasswordHashService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
