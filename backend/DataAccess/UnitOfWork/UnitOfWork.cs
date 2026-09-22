@@ -11,14 +11,18 @@ public class UnitOfWork : IUnitOfWork
 
     public IRefreshTokenRepository RefreshTokens { get; }
 
+    public IFavoritePokemonRepository FavoritePokemons { get; }
+
     public UnitOfWork(
         AppDbContext context,
         IUserRepository userRepository,
-        IRefreshTokenRepository refreshTokenRepository)
+        IRefreshTokenRepository refreshTokenRepository,
+        IFavoritePokemonRepository favoritePokemonRepository)
     {
         _context = context;
         Users = userRepository;
         RefreshTokens = refreshTokenRepository;
+        FavoritePokemons = favoritePokemonRepository;
     }
 
     public async Task<int> SaveChangesAsync()
