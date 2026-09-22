@@ -4,5 +4,6 @@ public interface IPokemonService
 {
     Task<List<Core.DTOs.Pokemon.PokemonListItemDto>> GetPokemonsAsync(
         int limit,
-        int offset);
+        int offset,
+        string? search);
 }

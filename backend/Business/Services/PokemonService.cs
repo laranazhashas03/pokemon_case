@@ -12,10 +12,13 @@ public class PokemonService : IPokemonService
         _httpClient = httpClient;
     }
 
-    public async Task<List<PokemonListItemDto>> GetPokemonsAsync(int limit, int offset)
+    public async Task<List<PokemonListItemDto>> GetPokemonsAsync(
+        int limit,
+        int offset,
+        string? search)
     {
         var response = await _httpClient.GetAsync(
-            $"https://pokeapi.co/api/v2/pokemon?limit={limit}&offset={offset}");
+            "https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0");
 
         response.EnsureSuccessStatusCode();
 
@@ -24,26 +27,37 @@ public class PokemonService : IPokemonService
         using var document = JsonDocument.Parse(json);
 
         var results = document.RootElement
-            .GetProperty("results");
+            .GetProperty("results")
+            .EnumerateArray();
 
-        var pokemons = new List<PokemonListItemDto>();
+        var filteredPokemons = new List<PokemonListItemDto>();
 
-        foreach (var pokemon in results.EnumerateArray())
-{
-    var name = pokemon.GetProperty("name").GetString() ?? "";
-    var url = pokemon.GetProperty("url").GetString() ?? "";
+        foreach (var pokemon in results)
+        {
+            var name = pokemon.GetProperty("name").GetString() ?? "";
 
-    var id = int.Parse(
-        url.TrimEnd('/').Split('/').Last());
+            if (!string.IsNullOrWhiteSpace(search) &&
+                !name.Contains(search, StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
 
-    pokemons.Add(new PokemonListItemDto
-    {
-        Id = id,
-        Name = name,
-        ImageUrl = $"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{id}.png"
-    });
-}
+            var url = pokemon.GetProperty("url").GetString() ?? "";
 
-        return pokemons;
+            var id = int.Parse(
+                url.TrimEnd('/').Split('/').Last());
+
+            filteredPokemons.Add(new PokemonListItemDto
+            {
+                Id = id,
+                Name = name,
+                ImageUrl = $"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{id}.png"
+            });
+        }
+
+        return filteredPokemons
+            .Skip(offset)
+            .Take(limit)
+            .ToList();
     }
 }

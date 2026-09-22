@@ -17,7 +17,8 @@ public class PokemonController : ControllerBase
 [HttpGet]
 public async Task<IActionResult> GetPokemons(
     [FromQuery] int limit = 20,
-    [FromQuery] int offset = 0)
+    [FromQuery] int offset = 0,
+    [FromQuery] string? search = null)
 {
     if (limit < 1 || limit > 100)
     {
@@ -31,7 +32,8 @@ public async Task<IActionResult> GetPokemons(
 
     var pokemons = await _pokemonService.GetPokemonsAsync(
         limit,
-        offset);
+        offset,
+        search);
 
     return Ok(pokemons);
     }
