@@ -14,6 +14,9 @@ public interface IUnitOfWork
     // Provides access to favorite Pokémon database operations.
     IFavoritePokemonRepository FavoritePokemons { get; }
 
+    // Provides access to caught Pokémon database operations.
+    IUserPokemonRepository UserPokemons { get; }
+
     // Saves all pending database changes.
     Task<int> SaveChangesAsync();
 }

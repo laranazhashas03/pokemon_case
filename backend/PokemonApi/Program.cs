@@ -15,10 +15,13 @@ builder.Services.AddScoped<JwtTokenService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 builder.Services.AddScoped<IFavoritePokemonRepository, FavoritePokemonRepository>();
+builder.Services.AddScoped<IUserPokemonRepository, UserPokemonRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IPokemonService, PokemonService>();
 builder.Services.AddScoped<IFavoritePokemonService, FavoritePokemonService>();
+builder.Services.AddScoped<ICatchPokemonService, CatchPokemonService>();
+builder.Services.AddScoped<IMyPokemonService, MyPokemonService>();
 builder.Services.AddHttpClient();
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
 
