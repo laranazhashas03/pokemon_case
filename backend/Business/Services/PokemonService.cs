@@ -60,4 +60,36 @@ public class PokemonService : IPokemonService
             .Take(limit)
             .ToList();
     }
+
+    public async Task<PokemonDetailDto?> GetPokemonByIdAsync(int id)
+    {
+    var response = await _httpClient.GetAsync(
+        $"https://pokeapi.co/api/v2/pokemon/{id}");
+
+    if (!response.IsSuccessStatusCode)
+    {
+        return null;
+    }
+
+    var json = await response.Content.ReadAsStringAsync();
+
+    using var document = JsonDocument.Parse(json);
+
+    var root = document.RootElement;
+
+    var name = root.GetProperty("name").GetString() ?? "";
+
+    var height = root.GetProperty("height").GetInt32();
+
+    var weight = root.GetProperty("weight").GetInt32();
+
+    return new PokemonDetailDto
+    {
+        Id = id,
+        Name = name,
+        ImageUrl = $"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{id}.png",
+        Height = height,
+        Weight = weight
+    };
+    }
 }

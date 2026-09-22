@@ -37,4 +37,22 @@ public async Task<IActionResult> GetPokemons(
 
     return Ok(pokemons);
     }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetPokemonById(int id)
+    {
+        if (id < 1)
+        {
+            return BadRequest("Pokemon ID must be greater than 0.");
+        }
+
+        var pokemon = await _pokemonService.GetPokemonByIdAsync(id);
+
+        if (pokemon == null)
+        {
+            return NotFound("Pokemon not found.");
+        }
+
+        return Ok(pokemon);
+    }
 }

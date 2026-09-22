@@ -6,4 +6,6 @@ public interface IPokemonService
         int limit,
         int offset,
         string? search);
+
+    Task<Core.DTOs.Pokemon.PokemonDetailDto?> GetPokemonByIdAsync(int id);
 }
