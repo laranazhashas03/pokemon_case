@@ -19,12 +19,12 @@ public class AuthService : IAuthService
     PasswordHashService passwordHashService,
     JwtTokenService jwtTokenService,
     IOptions<JwtSettings> jwtSettings)
-{
+    {
     _unitOfWork = unitOfWork;
     _passwordHashService = passwordHashService;
     _jwtTokenService = jwtTokenService;
     _jwtSettings = jwtSettings.Value;
-}
+    }
 
     public async Task<AuthResponse> RegisterAsync(RegisterRequest request)
     {
@@ -94,19 +94,58 @@ public class AuthService : IAuthService
     }
 
     private async Task<string> CreateAndSaveRefreshTokenAsync(User user)
-{
-    var refreshTokenValue = _jwtTokenService.GenerateRefreshToken();
-
-    var refreshToken = new RefreshToken
     {
-        Token = refreshTokenValue,
-        UserId = user.Id,
-        ExpiresAt = DateTime.UtcNow.AddDays(_jwtSettings.RefreshTokenExpirationDays)
-    };
+        var refreshTokenValue = _jwtTokenService.GenerateRefreshToken();
 
-    await _unitOfWork.RefreshTokens.AddAsync(refreshToken);
-    await _unitOfWork.SaveChangesAsync();
+        var refreshToken = new RefreshToken
+        {
+            Token = refreshTokenValue,
+            UserId = user.Id,
+            ExpiresAt = DateTime.UtcNow.AddDays(_jwtSettings.RefreshTokenExpirationDays)
+        };
 
-    return refreshTokenValue;
-}
+        await _unitOfWork.RefreshTokens.AddAsync(refreshToken);
+        await _unitOfWork.SaveChangesAsync();
+
+        return refreshTokenValue;
+    }
+
+        // Creates a new access token using a valid refresh token.
+    public async Task<AuthResponse> RefreshTokenAsync(RefreshTokenRequest request)
+    {
+        // Find the refresh token in the database.
+        var refreshToken = await _unitOfWork.RefreshTokens.GetByTokenAsync(request.RefreshToken);
+
+        // Reject the request if the refresh token does not exist.
+        if (refreshToken == null)
+        {
+            throw new UnauthorizedAccessException("Invalid refresh token.");
+        }
+
+        // Reject the request if the refresh token has expired.
+        if (refreshToken.ExpiresAt <= DateTime.UtcNow)
+        {
+            throw new UnauthorizedAccessException("Refresh token has expired.");
+        }
+
+        // Find the user associated with the refresh token.
+        var user = await _unitOfWork.Users.GetByIdAsync(refreshToken.UserId);
+
+        // Reject the request if the user no longer exists.
+        if (user == null)
+        {
+            throw new UnauthorizedAccessException("User not found.");
+        }
+
+        // Generate a new access token for the user.
+        var accessToken = _jwtTokenService.GenerateAccessToken(user);
+
+        return new AuthResponse
+        {
+            UserId = user.Id,
+            Email = user.Email,
+            AccessToken = accessToken,
+            RefreshToken = refreshToken.Token
+        };
+    }
 }

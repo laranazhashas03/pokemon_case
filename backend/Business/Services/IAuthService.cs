@@ -10,4 +10,7 @@ public interface IAuthService
 
     // Authenticates a user and returns authentication information.
     Task<AuthResponse> LoginAsync(LoginRequest request);
+
+    // Creates a new access token using a valid refresh token.
+    Task<AuthResponse> RefreshTokenAsync(RefreshTokenRequest request);
 }

@@ -30,8 +30,7 @@ public class MyPokemonService : IMyPokemonService
         foreach (var userPokemon in userPokemons)
         {
             // Get the latest Pokémon details from PokeAPI.
-            var pokemon = await _pokemonService
-                .GetPokemonByIdAsync(userPokemon.PokemonId);
+            var pokemon = await _pokemonService.GetPokemonByIdAsync(userPokemon.PokemonId);
 
             // Skip the Pokémon if it no longer exists in PokeAPI.
             if (pokemon == null)

@@ -29,8 +29,7 @@ public class MyPokemonController : ControllerBase
             return Unauthorized();
         }
 
-        var myPokemons = await _myPokemonService
-            .GetMyPokemonsAsync(userId.Value);
+        var myPokemons = await _myPokemonService.GetMyPokemonsAsync(userId.Value);
 
         return Ok(myPokemons);
     }
@@ -38,8 +37,7 @@ public class MyPokemonController : ControllerBase
     // Gets the logged-in user's ID from the JWT NameIdentifier claim.
     private int? GetUserId()
     {
-        var userIdClaim = User.FindFirstValue(
-            ClaimTypes.NameIdentifier);
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         if (!int.TryParse(userIdClaim, out var userId))
         {
