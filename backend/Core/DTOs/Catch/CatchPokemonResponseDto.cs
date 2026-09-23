@@ -12,6 +12,9 @@ public class CatchPokemonResponseDto
     // The Pokémon's name.
     public string PokemonName { get; set; } = string.Empty;
 
+    // Shows the catch probability used for this Pokémon.
+    public double CatchChance { get; set; }
+
     // Message describing the result of the catch attempt.
     public string Message { get; set; } = string.Empty;
 }

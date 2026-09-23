@@ -83,13 +83,19 @@ public class PokemonService : IPokemonService
 
     var weight = root.GetProperty("weight").GetInt32();
 
+    // Get all six base stats from PokeAPI and calculate their total.
+    var stats = root.GetProperty("stats");
+    
+    var baseStatTotal = stats.EnumerateArray().Sum(stat => stat.GetProperty("base_stat").GetInt32());
+
     return new PokemonDetailDto
     {
         Id = id,
         Name = name,
         ImageUrl = $"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{id}.png",
         Height = height,
-        Weight = weight
+        Weight = weight,
+        BaseStatTotal = baseStatTotal
     };
     }
 }

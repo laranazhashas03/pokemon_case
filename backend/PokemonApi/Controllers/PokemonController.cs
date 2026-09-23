@@ -20,9 +20,9 @@ public async Task<IActionResult> GetPokemons(
     [FromQuery] int offset = 0,
     [FromQuery] string? search = null)
 {
-    if (limit < 1 || limit > 100)
+    if (limit < 1 || limit > 1351)
     {
-        return BadRequest("Limit must be between 1 and 100.");
+        return BadRequest("Limit must be between 1 and 1351.");
     }
 
     if (offset < 0)

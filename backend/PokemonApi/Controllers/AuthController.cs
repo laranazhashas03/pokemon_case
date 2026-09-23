@@ -50,7 +50,8 @@ public class AuthController : ControllerBase
             });
         }
     }
-        // Creates a new access token using a valid refresh token.
+    
+    // Creates a new access token using a valid refresh token.
     [HttpPost("refresh")]
     public async Task<IActionResult> RefreshToken(
         RefreshTokenRequest request)

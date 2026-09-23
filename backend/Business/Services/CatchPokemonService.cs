@@ -30,8 +30,30 @@ public class CatchPokemonService : ICatchPokemonService
             throw new KeyNotFoundException("Pokemon not found.");
         }
 
-        // The Pokémon has a 50% chance of being caught.
-        const double catchChance = 0.50;
+        // Calculate the catch chance based on the Pokémon's total base stats.
+        // Stronger Pokémon are harder to catch.
+        double catchChance;
+
+        if (pokemon.BaseStatTotal <= 300)
+        {
+            catchChance = 0.80;
+        }
+        else if (pokemon.BaseStatTotal <= 450)
+        {
+            catchChance = 0.65;
+        }
+        else if (pokemon.BaseStatTotal <= 600)
+        {
+            catchChance = 0.50;
+        }
+        else if (pokemon.BaseStatTotal <= 700)
+        {
+            catchChance = 0.35;
+        }
+        else
+        {
+            catchChance = 0.20;
+        }
 
         // Generate a random value between 0 and 1.
         var roll = Random.Shared.NextDouble();
@@ -55,6 +77,7 @@ public class CatchPokemonService : ICatchPokemonService
                 Success = true,
                 PokemonId = pokemon.Id,
                 PokemonName = pokemon.Name,
+                CatchChance = catchChance,
                 Message = "Pokemon caught successfully."
             };
         }
@@ -65,6 +88,7 @@ public class CatchPokemonService : ICatchPokemonService
             Success = false,
             PokemonId = pokemon.Id,
             PokemonName = pokemon.Name,
+            CatchChance = catchChance,
             Message = "Pokemon could not be caught."
         };
     }
